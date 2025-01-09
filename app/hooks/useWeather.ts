@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { WeatherData } from '../WeatherData'
 
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather'
 
 const useWeather = (city: string) => {
-  const [weather, setWeather] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [weather, setWeather] = useState <WeatherData | null>()
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

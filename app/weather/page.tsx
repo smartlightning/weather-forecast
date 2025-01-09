@@ -6,7 +6,7 @@ import useWeather from '../hooks/useWeather'
 import useCitySuggestions from '../hooks/useCitySuggestions'
 
 const Page = () => {
-  const [city, setCity] = useState('London')
+  const [city, setCity] = useState('')
   const [inputCity, setInputCity] = useState(city)
   const [showDropdown, setShowDropdown] = useState(false)
   const { weather, loading: weatherLoading } = useWeather(city)

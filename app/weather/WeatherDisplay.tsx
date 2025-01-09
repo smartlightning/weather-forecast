@@ -1,7 +1,7 @@
 import React from 'react'
+import { WeatherData } from '../WeatherData'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const WeatherDisplay = ({ weather }: { weather: any }) => {
+const WeatherDisplay = ({ weather }: { weather: WeatherData | null | undefined }) => {
   if (!weather) return <p>No data available</p>
 
   return (
