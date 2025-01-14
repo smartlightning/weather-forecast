@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react'
-import { WeatherData } from '../WeatherData'
+import { WeatherData } from '../types/Weather'
+
+export type useWeatherHook = {
+  weather: WeatherData | null | undefined,
+  loading: boolean,
+  error: string | null
+}
 
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather'
 
-const useWeather = (city: string) => {
+const useWeather = (city: string): useWeatherHook => {
   const [weather, setWeather] = useState <WeatherData | null>()
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)

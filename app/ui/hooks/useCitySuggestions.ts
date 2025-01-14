@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react'
+import { CitySuggestion } from '../types/Weather'
 
 const API_URL = 'https://api.openweathermap.org/data/2.5/find'
 
-type Suggestion = {
-  id: number
-  name: string
-  sys: {
-    country: string
-  }
+type UseCitySuggestionsProps = {
+  suggestions: CitySuggestion[],
+  loading: boolean
 }
 
-const useCitySuggestions = (query: string) => {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+const useCitySuggestions = (query: string): UseCitySuggestionsProps => {
+  const [suggestions, setSuggestions] = useState<CitySuggestion[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {

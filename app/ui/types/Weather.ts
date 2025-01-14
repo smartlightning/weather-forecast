@@ -9,8 +9,16 @@ export interface WeatherData {
     }
     weather: {
       description: string
-      icon: string
+      main: string
     }[]
+    sys: {
+      country: string
+    }
+  }
+
+  export interface CitySuggestion {
+    id: string
+    name: string
     sys: {
       country: string
     }
