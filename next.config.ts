@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  images: {
+    domains: ['openweathermap.org'], // Allow OpenWeatherMap images
+  },
 };
 
 export default nextConfig;
