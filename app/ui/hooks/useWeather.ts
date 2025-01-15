@@ -1,46 +1,45 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { WeatherData } from '../types/Weather'
 
-export type useWeatherHook = {
-  weather: WeatherData | null | undefined,
-  loading: boolean,
-  error: string | null
-}
 
-const API_URL = 'https://api.openweathermap.org/data/2.5/weather'
-
-const useWeather = (city: string): useWeatherHook => {
-  const [weather, setWeather] = useState <WeatherData | null>()
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+const useWeather = (city: string) => {
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
+    if (!city) return
+
     const fetchWeather = async () => {
       setLoading(true)
-      setError(null) // Reset error state on new fetch
       try {
-        const response = await fetch(
-          `${API_URL}?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}&units=metric`
+        const currentWeatherResponse = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}&units=metric`
         )
-        const data = await response.json()
-        if (response.ok) {
-          setWeather(data)
-        } else {
-          setError(data.message || 'City not found')
-          setWeather(null) // Clear weather on error
+        const currentWeatherData = await currentWeatherResponse.json()
+
+        const forecastResponse = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}&units=metric`
+        )
+        const forecastData = await forecastResponse.json()
+        const forecast = forecastData?.list ? forecastData.list.slice(0, 5 * 8) : [];
+        const weatherWithForecast = {
+          ...currentWeatherData,
+          forecast: forecast, // Get 5 days of data
         }
+
+        setWeather(weatherWithForecast)
       } catch (error) {
-        console.log(error)
-        setError('Failed to fetch weather data')
+        console.error('Error fetching weather data:', error)
+        setWeather(null)
       } finally {
         setLoading(false)
       }
     }
 
-    if (city.trim()) fetchWeather()
+    fetchWeather()
   }, [city])
 
-  return { weather, loading, error }
+  return { weather, loading }
 }
 
 export default useWeather

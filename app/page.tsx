@@ -1,17 +1,20 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, Suspense } from 'react'
 import WeatherDisplay from './ui/weather/WeatherDisplay'
 import useWeather from './ui/hooks/useWeather'
 import useCitySuggestions from './ui/hooks/useCitySuggestions'
+import WeatherForecastDisplay from './ui/weather/WeatherForecastDisplay'
+import { CurrentWeatherCard } from './ui/skeletons'
 
 const Page: React.FC = () => {
   const [city, setCity] = useState<string>('')
   const [inputCity, setInputCity] = useState<string>(city)
   const [showDropdown, setShowDropdown] = useState<boolean>(false)
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1)
-  const { weather, loading: weatherLoading } = useWeather(city)
-  const { suggestions, loading: suggestionsLoading } = useCitySuggestions(inputCity)
+  const { weather } = useWeather(city)
+  const { suggestions, loading: suggestionsLoading } =
+    useCitySuggestions(inputCity)
 
   const handleCityChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -103,20 +106,18 @@ const Page: React.FC = () => {
           </ul>
         )}
 
-        {/* Conditional Rendering for Weather */}
+        {/* Weather Data or Loading Skeleton */}
         <div className="w-full mt-6">
-          {weatherLoading ? (
-             // Skeleton loader for weather display
-             <div className="flex flex-col items-center bg-white bg-opacity-10 p-6 rounded-lg shadow-md animate-pulse">
-             <div className="h-16 w-16 bg-gray-300 rounded-full"></div> {/* Weather Icon Skeleton */}
-             <h2 className="h-6 w-2/3 bg-gray-300 rounded mt-4"></h2> {/* City Name Skeleton */}
-             <p className="h-6 w-1/2 bg-gray-300 rounded"></p> {/* Condition Skeleton */}
-             <p className="h-8 w-1/3 bg-gray-300 rounded font-semibold"></p> {/* Temperature Skeleton */}
-           </div>
-          ) : (
-            // Show weather display when loaded
-            <WeatherDisplay weather={weather} />
-          )}
+          <Suspense fallback={<CurrentWeatherCard />}>
+            {weather ? (
+              <>
+                <WeatherDisplay weather={weather} />
+                <WeatherForecastDisplay forecast={weather.forecast} />
+              </>
+            ) : (
+              <p>No weather data available.</p>
+            )}
+          </Suspense>
         </div>
       </div>
     </div>
