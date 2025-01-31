@@ -21,6 +21,7 @@ const useCitySuggestions = (query: string): UseCitySuggestionsProps => {
 
       setLoading(true)
       try {
+        console.log("api key", process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY)
         const response = await fetch(
           `${API_URL}?q=${query}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
         )
